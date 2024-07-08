@@ -2,16 +2,33 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from sqlalchemy.orm import Session as SQLAlchemySession
+from fastapi.middleware.cors import CORSMiddleware
 
 class Movie(SQLModel, table=True):
     __tablename__ = 'movie'
     __table_args__ = {'extend_existing': True}
     id: int = Field(default=None, primary_key=True)
     title: str
-    director: str
+    rating: float
     year: int
+    image:str
+    genre: str
+    description: str
+    
 
 app = FastAPI()
+
+origins = ["*"]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
